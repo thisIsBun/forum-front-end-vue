@@ -7,7 +7,7 @@
     <hr>
     <div class="row text-center">
       <div class="col-3" v-for="user in users" :key="user.id">
-        <router-link :to="{name: 'users-top'}">
+        <router-link :to="{name: 'user', params: {id: user.id}}">
           <img
             :src="user.image"
             width="140px"
