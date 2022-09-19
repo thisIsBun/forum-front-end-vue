@@ -60,6 +60,21 @@ const routes = [
     component: () => import('../views/User.vue')
   },
   {
+    path: '/admin',
+    redirect: '/admin/restaurants',
+    exact: true, //exact屬性，是設定必須完全一樣的網址
+  },
+  {
+    path: '/admin/restaurants',
+    name: 'admin-restaurants',
+    component: () => import('../views/AdminRestaurants')
+  },
+  {
+    path: '/admin/restaurants/:id',
+    name: 'admin-restaurant',
+    component: () => import('../views/AdminRestaurant')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound

@@ -9,7 +9,7 @@
       <div class="col-3" v-for="user in users" :key="user.id">
         <router-link :to="{name: 'user', params: {id: user.id}}">
           <img
-            :src="user.image"
+            :src="user.image | emptyImage"
             width="140px"
             height="140px"
           >
@@ -41,6 +41,7 @@
 
 <script>
 import NavTabs from '../components/NavTabs.vue'
+import { emptyImageFilter } from '../utils/mixin.js'
 
 const dummyData = {
   "users": [
@@ -87,6 +88,7 @@ const dummyData = {
 }
 
 export default {
+  mixins: [emptyImageFilter],
   components: {
     NavTabs,
   },

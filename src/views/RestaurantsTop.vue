@@ -20,7 +20,7 @@
           >
             <img
               class="card-img"
-              :src="restaurant.image"
+              :src="restaurant.image | emptyImage"
             >
           </router-link>
         </div>
@@ -63,6 +63,7 @@
 
 <script>
 import NavTabs from '../components/NavTabs.vue'
+import { emptyImageFilter } from '../utils/mixin.js'
 
 const dummyData = {
   "restaurants": [
@@ -230,6 +231,7 @@ const dummyData = {
 }
 
 export default {
+  mixins: [emptyImageFilter],
   components: {
     NavTabs,
   },

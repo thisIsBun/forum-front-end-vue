@@ -7,10 +7,10 @@
       <router-link 
       v-for="following in followings" 
       :key="following.id"
-      :to="{name: user, params: {id: following.id}}"
+      :to="{name: 'user', params: {id: following.id}}"
       >
         <img
-          :src="following.image"
+          :src="following.image | emptyImage"
           width="60px"
           height="60px"
           class="mr-1"
@@ -21,7 +21,10 @@
 </template>
 
 <script>
+import { emptyImageFilter } from '../utils/mixin.js'
+
 export default {
+  mixins: [emptyImageFilter],
   props: {
     followings: {
       type: Array,
