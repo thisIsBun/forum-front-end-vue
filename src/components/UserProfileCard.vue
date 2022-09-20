@@ -28,10 +28,18 @@
             </li>
           </ul>
           <p>
-            <a href="/users/2/edit"></a>
-            <button type="submit" class="btn btn-primary" v-if="isCurrentUser">Edit</button>
+            
+            <router-link
+              v-if="isCurrentUser"
+              :to="{name: 'user-edit', params: {id: user.id}}"
+              class="btn btn-primary"
+              role="button"
+            >Edit</router-link>
+
             <button type="button" class="btn btn-danger" v-else-if="isFollowed" @click.stop.prevent="deleteFollow">取消追蹤</button>
+
             <button type="button" class="btn btn-primary" v-else @click.stop.prevent="addFollow">追蹤</button>
+
           </p>
         </div>
       </div>
