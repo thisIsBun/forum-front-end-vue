@@ -90,6 +90,16 @@ const routes = [
     component: () => import('../views/AdminRestaurant')
   },
   {
+    path: '/admin/categories',
+    name: 'admin-categories',
+    component: () => import('../views/AdminCategories')
+  },
+  {
+    path: '/admin/users',
+    name: 'admin-users',
+    component: () => import('../views/AdminUsers')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound

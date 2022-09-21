@@ -18,7 +18,7 @@ export default {
   methods: {
     handleAfterSubmit(formData) {
 
-      // TODO: 透過 api將表單內容傳到後端伺服器
+      // TODO: 透過 api將表格內容傳到伺服器
 
       // formData直接讀取的資料比較複雜
       // 會先用 entries()，轉成 key-value pairs結構 --> [key, value]

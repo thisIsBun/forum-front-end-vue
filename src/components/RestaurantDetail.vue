@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import emptyImageFilter from '../utils/mixin.js'
+import { emptyImageFilter } from '../utils/mixin.js'
 
 export default {
   mixins: [emptyImageFilter],
