@@ -84,7 +84,7 @@
           //改為 true, 避免用戶連續點擊
           this.isProcessing = true 
 
-          // 提供帳密，向後端 server請求驗證
+          // 提供用戶帳密給後端，並把驗證 response用 response變數儲存
           const response = await authorizationAPI.signIn({
             email: this.email,
             password: this.password
