@@ -11,7 +11,7 @@ const routes = [
     // 設定根目錄的轉址
     path: '/',
     name: 'root',
-    redirect: '/restaurants'
+    redirect: '/signin'
   },
   {
     path: '/signin',
