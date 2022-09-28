@@ -15,13 +15,13 @@
           >
         </router-link>
         <h2>{{user.name}}</h2>
-        <span class="badge badge-secondary">追蹤人數：{{user.FollowerCount}}</span>
+        <span class="badge badge-secondary">追蹤人數：{{user.followerCount}}</span>
         <p class="mt-3">
           <button
             type="button"
             class="btn btn-danger"
             v-if="user.isFollowed"
-            @click.stop.prevent="deleteFollow(user)"
+            @click.stop.prevent="deleteFollowing(user.id)"
           >
             取消追蹤
           </button>
@@ -29,7 +29,7 @@
             type="button"
             class="btn btn-primary"
             v-else
-            @click.stop.prevent="addFollow(user)"
+            @click.stop.prevent="addFollowing(user.id)"
           >
             追蹤
           </button>
@@ -42,50 +42,8 @@
 <script>
 import NavTabs from '../components/NavTabs.vue'
 import { emptyImageFilter } from '../utils/mixin.js'
-
-const dummyData = {
-  "users": [
-    {
-      "id": 1,
-      "name": "root",
-      "email": "root@example.com",
-      "password": "$2a$10$N.hlatXopaDRe.OYiEK/yOX3yDBWBFWMOYmdcRn/eOzlsu9DRJ.eG",
-      "isAdmin": true,
-      "image": 'https://i.imgur.com/XAU6dFm.jpg',
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    },
-    {
-      "id": 2,
-      "name": "user1",
-      "email": "user1@example.com",
-      "password": "$2a$10$3GnvfbcNCrq6bBkZJpwvTOImo/FR5KR30RSApLIWJc4rrHRh/F5yS",
-      "isAdmin": false,
-      "image": 'https://i.imgur.com/yIicJS8.jpg',
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    },
-    {
-      "id": 3,
-      "name": "user2",
-      "email": "user2@example.com",
-      "password": "$2a$10$pWd3OtsbIVlXn9guqdUMDuheMQCGakX6EBGzzT1nNvBeu5Z.ST7xG",
-      "isAdmin": false,
-      "image": 'https://i.imgur.com/Gim8nXf.jpg',
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    }
-  ]
-}
+import usersAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
 
 export default {
   mixins: [emptyImageFilter],
@@ -101,32 +59,77 @@ export default {
     this.fetchUsers()
   },
   methods: {
-    fetchUsers () {
-      this.users = dummyData.users
-    },
-    addFollow (user) {
-      this.users = this.users.map(function (origin_user) {
-        if (origin_user.id === user.id) {
+    async fetchUsers () {
+
+      try {
+
+        const { data } = await usersAPI.getTopUsers()
+        this.users = data.users.map(function(user) {
           return {
-            ...origin_user,
-            isFollowed: true
-          } 
-        } else {
-          return { ...origin_user }
-        }
-      }) 
-    },
-    deleteFollow (user) {
-      this.users = this.users.map(function (origin_user) {
-        if (origin_user.id === user.id) {
-          return {
-            ...origin_user,
-            isFollowed: false
+            id: user.id,
+            name: user.name,
+            image: user.image,
+            followerCount: user.FollowerCount,
+            isFollowed: user.isFollowed,
           }
-        } else {
-          return { ...origin_user }
+        })
+
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得美食達人，請稍後再試'
+        })
+      }
+    },
+    async addFollowing (userId) {
+      try {
+        const { data } = await usersAPI.addFollowing({userId})
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-      }) 
+
+        this.users = this.users.map(function (origin_user) {
+          if (origin_user.id === userId) {
+            return {
+              ...origin_user,
+              isFollowed: true
+            }
+          } else {
+            return { ...origin_user }
+          }
+        }) 
+
+      } catch (error) {
+        Toast({
+          icon: 'error',
+          title: '無法加入追蹤，請稍後再試'
+        })
+      }
+    },
+    async deleteFollowing (userId) {
+      try {
+        const { data } = await usersAPI.deleteFollowing({userId})
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.users = this.users.map(function (origin_user) {
+          if (origin_user.id === userId) {
+            return {
+              ...origin_user,
+              isFollowed: false
+            }
+          } else {
+            return { ...origin_user }
+          }
+        }) 
+
+      } catch (error) {
+        Toast({
+          icon: 'error',
+          title: '無法取消追蹤，請稍後再試'
+        })
+      }
     }
   }
 }
