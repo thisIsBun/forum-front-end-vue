@@ -64,171 +64,9 @@
 <script>
 import NavTabs from '../components/NavTabs.vue'
 import { emptyImageFilter } from '../utils/mixin.js'
-
-const dummyData = {
-  "restaurants": [
-    {
-      "id": 50,
-      "name": "Delmer Heidenreich",
-      "tel": "447.340.3498 x57332",
-      "address": "1547 Ryan Landing",
-      "opening_hours": "08:00",
-      "description": "Ipsa accusantium id officiis repellendus vel digni",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=97.59355772057567",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 5,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 49,
-      "name": "Kiana Stiedemann",
-      "tel": "971.573.1386 x95784",
-      "address": "033 Duane Tunnel",
-      "opening_hours": "08:00",
-      "description": "Vel aliquam quia consequatur. Veritatis esse aliqu",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=58.13960927203758",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 3,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 48,
-      "name": "Micah Koss",
-      "tel": "657-018-8738 x3334",
-      "address": "600 Estelle Plains",
-      "opening_hours": "08:00",
-      "description": "Iusto voluptatibus ut adipisci sint.\nQuia facere p",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=66.73356803497228",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 5,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 47,
-      "name": "Coty Wiza",
-      "tel": "1-592-514-1897",
-      "address": "40173 Alexander Overpass",
-      "opening_hours": "08:00",
-      "description": "Nihil voluptatum repudiandae architecto. Tempore d",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=9.37316190208264",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 5,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 46,
-      "name": "Araceli Yost",
-      "tel": "1-476-002-6311",
-      "address": "160 Lempi Center",
-      "opening_hours": "08:00",
-      "description": "quo",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=25.975170524861092",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 4,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 45,
-      "name": "Chesley Hand",
-      "tel": "1-775-242-0148 x64920",
-      "address": "615 Rickie Isle",
-      "opening_hours": "08:00",
-      "description": "Tempora possimus qui quo perferendis. Enim qui sae",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=74.92334621245237",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 4,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 44,
-      "name": "Kiley MacGyver",
-      "tel": "038-884-3712 x28075",
-      "address": "8033 Schroeder Loaf",
-      "opening_hours": "08:00",
-      "description": "ut",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=89.42230569968463",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 3,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 43,
-      "name": "Julia Moore",
-      "tel": "1-674-172-5156 x53440",
-      "address": "894 Idella Dale",
-      "opening_hours": "08:00",
-      "description": "Adipisci facilis veniam reprehenderit.",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=51.691401014238856",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 5,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 42,
-      "name": "Karen Hyatt",
-      "tel": "1-263-292-8442 x48154",
-      "address": "39566 Shirley Cape",
-      "opening_hours": "08:00",
-      "description": "Fuga ut deserunt qui et voluptatem quia sequi volu",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=85.5649012347134",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 2,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    },
-    {
-      "id": 41,
-      "name": "Mr. Aniya Nitzsche",
-      "tel": "033-118-0386",
-      "address": "85849 Vernie Camp",
-      "opening_hours": "08:00",
-      "description": "earum",
-      "image": "https://loremflickr.com/320/240/restaurant,food/?random=39.478494487375706",
-      "viewCounts": 0,
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z",
-      "CategoryId": 3,
-      "FavoritedUsers": [],
-      "isFavorited": false,
-      "FavoriteCount": 0
-    }
-  ]
-}
+import restaurantsAPI from '../apis/restaurants'
+import usersAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
 
 export default {
   mixins: [emptyImageFilter],
@@ -237,37 +75,85 @@ export default {
   },
   data () {
     return {
-      restaurants: dummyData.restaurants
+      restaurants: []
     }
   },
+  created () {
+    this.fetchRestaurantsTop()
+  },
   methods: {
-    addFavorited (restaurantId) {
-      this.restaurants = this.restaurants.map( restaurant => {
-        if (restaurant.id === restaurantId) {
-          return {
-            ...restaurant,
-            isFavorited: true
-          }
-        } else {
-          return {
-            ...restaurant,
-          }
-        }
-      })
+    async fetchRestaurantsTop () {
+      try {
+        const { data } = await restaurantsAPI.getTopRestaurants()
+        this.restaurants = data.restaurants
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得人氣餐廳，請稍後再試'
+        })
+      }
     },
-    deleteFavorited (restaurantId) {
-      this.restaurants = this.restaurants.map(restaurant => {
-        if (restaurant.id === restaurantId) {
-          return {
-            ...restaurant,
-            isFavorited: false
-          }
-        } else {
-          return {
-            ...restaurant,
-          }
+    async addFavorited (restaurantId) {
+
+      try {
+        const { data } = await usersAPI.addFavorite({restaurantId})
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-      })
+
+        this.restaurants = this.restaurants
+        .map(restaurant => {
+          if (restaurant.id === restaurantId) {
+            return {
+              ...restaurant,
+              FavoriteCount: restaurant.FavoriteCount + 1,
+              isFavorited: true
+            }
+          } else {
+            return {
+              ...restaurant,
+            }
+          }
+        })
+        // 按讚時，FavoriteCount 用 sort()方式降幂排序，降幂 = 數字由大到小
+        .sort((a, b) => {
+          return b.FavoriteCount - a.FavoriteCount
+        })
+
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法將餐廳加入最愛，請稍後再試'
+        })
+      }
+    },
+    async deleteFavorited (restaurantId) {
+
+      try {
+        const { data } = await usersAPI.deleteFavorite({restaurantId})
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurants = this.restaurants.map(restaurant => {
+          if (restaurant.id === restaurantId) {
+            return {
+              ...restaurant,
+              FavoriteCount: restaurant.FavoriteCount - 1,
+              isFavorited: false
+            }
+          } else {
+            return {
+              ...restaurant,
+            }
+          }
+        }).sort((a, b) => b.FavoriteCount - a.FavoriteCount)
+
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法將餐廳移除最愛，請稍後再試'
+        })
+      }
     }
   }
 }

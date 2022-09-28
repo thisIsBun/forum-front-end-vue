@@ -1,4 +1,4 @@
-import { apiHelper } from './../utils/helpers'
+import { apiHelper } from './../utils/helpers' // apiHelper變數裡面放 axios設定
 const getToken = () => localStorage.getItem('token')
 
 
@@ -18,6 +18,12 @@ export default {
   getFeeds () {
     return apiHelper.get('/restaurants/feeds', {
       headers: {Authorization: `Bearer ${getToken()}`}
+    })
+  },
+  getTopRestaurants () {
+    // 向 axios.get()發送請求，因為 axios已經用 apiHelper變數放了，改用 apiHelp.get()
+    return apiHelper.get('/restaurants/top', {
+      headers: { Authorization: `Bearer ${getToken()}`}
     })
   }
 }
