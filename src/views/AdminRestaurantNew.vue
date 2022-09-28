@@ -3,6 +3,7 @@
     <!-- 餐廳表單 AdminRestaurantForm -->
     <AdminRestaurantForm 
     @after-submit="handleAfterSubmit"
+    :isProcessing="isProcessing"
     />
     
   </div>
@@ -10,13 +11,39 @@
 
 <script>
 import AdminRestaurantForm from '../components/AdminRestaurantForm.vue'
+import adminAPI from '../apis/admin'
+import { Toast } from '../utils/helpers'
 
 export default {
   components: {
     AdminRestaurantForm,
   },
+  data () {
+    return {
+      isProcessing: false,
+    }
+  },
   methods: {
-    handleAfterSubmit(formData) {
+    async handleAfterSubmit(formData) {
+      try {
+
+        // 當 server再建立餐廳時，避免用戶連擊，用 isProcessing true disable按鈕
+        this.isProcessing = true
+
+        const { data } = await adminAPI.restaurants.create({ formData })      
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        // server確認這筆新餐廳有加到清單後，路由改到後台餐廳清單
+        this.$router.push('/admin/restaurants')
+
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法建立餐廳，請稍後再試'
+        })
+      }
 
       // TODO: 透過 api將表格內容傳到伺服器
 
