@@ -7,6 +7,22 @@ export default {
       return apiHelper.get('/admin/categories', {
         headers: { Authorization: `Bearer ${getToken()}`}
       })
+    },
+    // 只能用 name給伺服器
+    create({ name }) {
+      return apiHelper.post('/admin/categories', { name }, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
+    },
+    delete({ categoryId }) {
+      return apiHelper.delete(`/admin/categories/${categoryId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
+    },
+    update({categoryId, name}) {
+      return apiHelper.put(`/admin/categories/${categoryId}`, { categoryId, name }, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
     }
   },
   restaurants: {
