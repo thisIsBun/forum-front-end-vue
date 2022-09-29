@@ -45,28 +45,30 @@
 
 <script>
 import {emptyImageFilter} from '../utils/mixin.js'
+import adminAPI from '../apis/admin'
+import { Toast } from '../utils/helpers'
 
-const dummyData = {
-  restaurant: {
-    id: 2,
-    name: 'Mrs. Mckenzie Johnston',
-    tel: '567-714-6131 x621',
-    address: '61371 Rosalinda Knoll',
-    opening_hours: '08:00',
-    description:
-      'Quia pariatur perferendis architecto tenetur omnis pariatur tempore.',
-    image: 'https://loremflickr.com/320/240/food,dessert,restaurant/?random=2',
-    createdAt: '2019-06-22T09:00:43.000Z',
-    updatedAt: '2019-06-22T09:00:43.000Z',
-    CategoryId: 3,
-    Category: {
-      id: 3,
-      name: '義大利料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    }
-  }
-}
+// const dummyData = {
+//   restaurant: {
+//     id: 2,
+//     name: 'Mrs. Mckenzie Johnston',
+//     tel: '567-714-6131 x621',
+//     address: '61371 Rosalinda Knoll',
+//     opening_hours: '08:00',
+//     description:
+//       'Quia pariatur perferendis architecto tenetur omnis pariatur tempore.',
+//     image: 'https://loremflickr.com/320/240/food,dessert,restaurant/?random=2',
+//     createdAt: '2019-06-22T09:00:43.000Z',
+//     updatedAt: '2019-06-22T09:00:43.000Z',
+//     CategoryId: 3,
+//     Category: {
+//       id: 3,
+//       name: '義大利料理',
+//       createdAt: '2019-06-22T09:00:43.000Z',
+//       updatedAt: '2019-06-22T09:00:43.000Z'
+//     }
+//   }
+// }
 
 export default {
   mixins: [emptyImageFilter],
@@ -84,25 +86,42 @@ export default {
       }
     }
   },
-  mounted () {
-    this.fetchRestaurant()
+  created () {
+    const id = this.$route.params.id
+    this.fetchRestaurant(id)
+  },
+  beforeRouteUpdate (to, from, next) {
+    const { id } = to.params
+    this.fetchRestaurant(id)
+    next()
   },
   methods: {
-    fetchRestaurant () {
-      const { restaurant } = dummyData
-      const { id, name, tel, address, opening_hours, description, image, Category } = restaurant
+    async fetchRestaurant(restaurantId) {
+      try {
+        const {data} = await adminAPI.restaurants.getDetail({ restaurantId })
 
-      this.restaurant = {
-        ...this.restaurant,
-        id,
-        name,
-        categoryName: Category ? Category.name : '未分類',
-        image,
-        openingHours: opening_hours,
-        tel,
-        address,
-        description
+        const { restaurant } = data
+        const { id, name, tel, address, opening_hours, description, image, Category } = restaurant
+
+        this.restaurant = {
+          ...this.restaurant,
+          id,
+          name,
+          categoryName: Category ? Category.name : '未分類',
+          image,
+          openingHours: opening_hours,
+          tel,
+          address,
+          description
+        }
+
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得餐廳資料，請稍後再試'
+        })
       }
+
     }
   }
 }
