@@ -25,99 +25,21 @@
 import RestaurantDetail from '../components/RestaurantDetail.vue'
 import RestaurantComments from '../components/RestaurantComments.vue'
 import CreateComment from '../components/CreateComment.vue'
+import restaurantAPI from '../apis/restaurants'
+import { Toast } from '../utils/helpers'
+import { mapState } from 'vuex'
 
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
 
-const dummyData = {
-  "restaurant": {
-    "id": 1,
-    "name": "Dr. Chloe Stroman",
-    "tel": "314.863.0863",
-    "address": "313 Renee Shores",
-    "opening_hours": "08:00",
-    "description": "Fugiat assumenda quo quas. Ut aut nostrum distinctio tenetur debitis. Est aut et est magni itaque pariatur laborum cupiditate distinctio. Occaecati et pariatur aut est. Quam est ipsa harum omnis saepe delectus repellat mollitia. Quod quasi similique officiis.",
-    "image": "https://loremflickr.com/320/240/restaurant,food/?random=28.560792367453104",
-    "viewCounts": 1,
-    "createdAt": "2022-09-13T00:32:28.000Z",
-    "updatedAt": "2022-09-17T05:57:19.439Z",
-    "CategoryId": 5,
-    "Category": {
-      "id": 5,
-      "name": "素食料理",
-      "createdAt": "2022-09-13T00:32:28.000Z",
-      "updatedAt": "2022-09-13T00:32:28.000Z"
-    },
-    "FavoritedUsers": [],
-    "LikedUsers": [],
-    "Comments": [
-      {
-        "id": 101,
-        "text": "Incidunt eaque tempora earum quasi.",
-        "UserId": 1,
-        "RestaurantId": 1,
-        "createdAt": "2022-09-13T00:32:28.000Z",
-        "updatedAt": "2022-09-13T00:32:28.000Z",
-        "User": {
-          "id": 1,
-          "name": "root",
-          "email": "root@example.com",
-          "password": "$2a$10$N.hlatXopaDRe.OYiEK/yOX3yDBWBFWMOYmdcRn/eOzlsu9DRJ.eG",
-          "isAdmin": true,
-          "image": null,
-          "createdAt": "2022-09-13T00:32:28.000Z",
-          "updatedAt": "2022-09-13T00:32:28.000Z"
-        }
-      },
-      {
-        "id": 51,
-        "text": "Labore aut sit quam architecto doloribus saepe aut.",
-        "UserId": 3,
-        "RestaurantId": 1,
-        "createdAt": "2022-09-13T00:32:28.000Z",
-        "updatedAt": "2022-09-13T00:32:28.000Z",
-        "User": {
-          "id": 3,
-          "name": "user2",
-          "email": "user2@example.com",
-          "password": "$2a$10$pWd3OtsbIVlXn9guqdUMDuheMQCGakX6EBGzzT1nNvBeu5Z.ST7xG",
-          "isAdmin": false,
-          "image": null,
-          "createdAt": "2022-09-13T00:32:28.000Z",
-          "updatedAt": "2022-09-13T00:32:28.000Z"
-        }
-      },
-      {
-        "id": 1,
-        "text": "Atque odit soluta itaque ut consequatur qui earum.",
-        "UserId": 3,
-        "RestaurantId": 1,
-        "createdAt": "2022-09-13T00:32:28.000Z",
-        "updatedAt": "2022-09-13T00:32:28.000Z",
-        "User": {
-          "id": 3,
-          "name": "user2",
-          "email": "user2@example.com",
-          "password": "$2a$10$pWd3OtsbIVlXn9guqdUMDuheMQCGakX6EBGzzT1nNvBeu5Z.ST7xG",
-          "isAdmin": false,
-          "image": null,
-          "createdAt": "2022-09-13T00:32:28.000Z",
-          "updatedAt": "2022-09-13T00:32:28.000Z"
-        }
-      }
-    ]
-  },
-  "isFavorited": false,
-  "isLiked": false
-}
+// const dummyUser = {
+//   currentUser: {
+//     id: 1,
+//     name: '管理者',
+//     email: 'root@example.com',
+//     image: 'https://i.pravatar.cc/300',
+//     isAdmin: true
+//   },
+//   isAuthenticated: true
+// }
 
 export default {
   components: {
@@ -140,33 +62,54 @@ export default {
         isLiked: false
       },
       restaurantComments: [],
-      currentUser: {}
+      // currentUser: {} --> 要移除，currentUser資料都來自 Vuex
     }
   },
   created () {
     const { id: restaurantId } = this.$route.params
     this.fetchRestaurant(restaurantId)
   },
+  beforeRouteUpdate (to, from, next) {
+    const { id } = to.params
+    this.fetchRestaurant(id)
+    next()
+  },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   methods: {
-    fetchRestaurant(restaurantId) {
+    async fetchRestaurant(restaurantId) {
 
-      console.log('restaurantId', restaurantId)
+      try {
 
-      this.restaurant = {
-        id: dummyData.restaurant.id,
-        name: dummyData.restaurant.name,
-        categoryName: dummyData.restaurant.Category ? dummyData.restaurant.Category.name : '未分類',
-        image: dummyData.restaurant.image,
-        openingHours: dummyData.restaurant.opening_hours,
-        tel: dummyData.restaurant.tel,
-        address: dummyData.restaurant.address,
-        description: dummyData.restaurant.description,
-        isFavorited: dummyData.isFavorited,
-        isLiked: dummyData.isLiked
+        const { data } = await restaurantAPI.getRestaurant({ restaurantId })
+        console.log(data)
+
+        const { isFavorited, isLiked, restaurant } = data
+        const { Category, Comments, address, description, id, image, name, opening_hours, tel } = restaurant
+
+        this.restaurant = {
+          id,
+          name,
+          categoryName: Category ? Category.name : '未分類',
+          image,
+          openingHours: opening_hours,
+          tel,
+          address,
+          description,
+          isFavorited,
+          isLiked,
+        }
+        this.restaurantComments = Comments
+
+      } catch (error) {
+        console.error(error.message)
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得餐廳資料，請稍後再試'
+        })
       }
 
-      this.restaurantComments = dummyData.restaurant.Comments
-      this.currentUser = dummyUser.currentUser
     },
     afterDeleteComment (commentId) {
       console.log('afterDeleteComment', commentId)
@@ -174,6 +117,8 @@ export default {
       this.restaurantComments = this.restaurantComments.filter(comment => comment.id !== commentId)
     },
     afterCreateComment (payload) {
+
+      // payload：要攜帶的資料
       const {commentId, restaurantId, text} = payload
 
       this.restaurantComments.push({

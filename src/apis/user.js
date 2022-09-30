@@ -5,6 +5,22 @@ import { apiHelper } from "../utils/helpers";
 const getToken = () => localStorage.getItem('token')
 
 export default {
+    // 只是要驗證該 user token，登入資訊
+  getCurrentUser () {
+    return apiHelper.get('/get_current_user', {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
+  },
+  // 可以取得 user更詳細的資料
+  get({ userId }) {
+    return apiHelper.get(`users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
+  },
   addFavorite({ restaurantId }) {
     return apiHelper.post(`/favorite/${restaurantId}`, null, {
       headers: {

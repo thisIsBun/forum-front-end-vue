@@ -56,46 +56,51 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 // 串 api之前，先用這假資料模擬
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+// const dummyUser = {
+//   currentUser: {
+//     id: 1,
+//     name: '管理者',
+//     email: 'root@example.com',
+//     image: 'https://i.pravatar.cc/300',
+//     isAdmin: true
+//   },
+//   isAuthenticated: true
+// }
 
 export default {
-  data() {
-    return {
-      // 未登入的情況下，系統預設的使用者資料
-      currentUser: {
-        id: -1,
-        name: '',
-        email: '',
-        image: '',
-        isAdmin: false
-      },
-      isAuthenticated: false,
-    }
-  },
-  created() {
-    // 當 Vue載入時，就會觸發 fetchUser，currentUser資料會被 dummyUser蓋過去
-    this.fetchUser()
-  },
-  methods: {
-    fetchUser() {
-      this.currentUser = {
-        ...this.currentUser,
-        ...dummyUser.currentUser
-      },
-        this.isAuthenticated = dummyUser.isAuthenticated
-    }
-  },
+  computed: {
+    // 用 mapState方法，選擇要把 state裡哪些資料帶進來這元件
+    ...mapState(['currentUser', 'isAuthenticated'])
+  }
+  // data() {
+  //   return {
+  //     // 未登入的情況下，系統預設的使用者資料
+  //     currentUser: {
+  //       id: -1,
+  //       name: '',
+  //       email: '',
+  //       image: '',
+  //       isAdmin: false
+  //     },
+  //     isAuthenticated: false,
+  //   }
+  // },
+  // created() {
+  //   // 當 Vue載入時，就會觸發 fetchUser，currentUser資料會被 dummyUser蓋過去
+  //   this.fetchUser()
+  // },
+  // methods: {
+  //   fetchUser() {
+  //     this.currentUser = {
+  //       ...this.currentUser,
+  //       ...dummyUser.currentUser
+  //     },
+  //       this.isAuthenticated = dummyUser.isAuthenticated
+  //   }
+  // },
 }
 </script>
 

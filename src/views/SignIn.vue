@@ -103,7 +103,14 @@
           // 2-1：取得 API請求後的資料，並將 token通行證存到 local storage
           localStorage.setItem('token', data.token)
 
-          // 2-2：轉址到 /restaurants
+          // 2-2：將 data.user資料傳到 Vuex
+          // $store.commit 會先調用 setCurrentUser mutations
+          // setCurrentUser調用後：
+              // 會用 data.user的值，更新 state裡 currentUser的值
+              // 再把 isAuthenticated改成 true，代表有成功登入
+          this.$store.commit('setCurrentUser', data.user)
+
+          // 2-3：轉址到 /restaurants
           this.$router.push('/restaurants')
           
 

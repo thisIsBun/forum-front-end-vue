@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
 import SignIn from '../views/SignIn.vue'
 import Restaurants from '../views/Restaurants.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -106,9 +107,22 @@ const routes = [
   }
 ]
 
+// 用 router變數來存放 VueRouter實例，才可以把 beforeEach放入 VueRouter裡
 const router = new VueRouter({
   linkExactActiveClass: 'active',
   routes
+})
+
+// 同 beforeRouteUpdate，只要 route有改變，就可以產出 to, from 物件
+// 但這裡不用取 to, from的值
+
+// 是每次 route改變時，就可以用 dispatch()方式，去指派 action裡 fetchCurrentUser
+// fetchCurrentUser裡，會打 getCurrentUser api，成功的話 response.data裡會有 user資訊
+// 在用 commit的方式，去 invoke mutations裡的 setCurrentUser，讓 state取得 user資訊
+router.beforeEach((to, from, next) => {
+
+  store.dispatch('fetchCurrentUser')
+  next()
 })
 
 export default router

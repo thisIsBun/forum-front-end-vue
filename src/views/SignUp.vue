@@ -101,6 +101,21 @@
     },
     methods: {
       async handleSubmit () {
+
+        // 試用 formDate資料格式打 api
+        // try {
+        //   const form = event.target
+        //   const formData = new FormData(form)
+
+        //   const response = await authorizationAPI.signUp({formData})
+        //   console.log(response)
+
+        // } catch (error) {
+        //   Toast.fire({
+        //     icon: 'error',
+        //     title: `無法註冊 ${error.message}`
+        //   })
+        // }
         try {
 
           // 擋掉使用者拿掉 input required
@@ -122,8 +137,6 @@
             this.passwordCheck = ''
             return
           }
-
-
 
           // 把新帳號資訊給伺服器
           const { data } = await authorizationAPI.signUp({
