@@ -155,8 +155,8 @@ export default {
       try {
 
         const { data } = await adminAPI.users.update({
-          userId: userId,
-          isAdmin: !isAdmin
+          userId,
+          isAdmin: (!isAdmin).toString() // 原本是 boolean值，要轉成 string 伺服器才可以吃
         })
 
         if (data.status === 'error') {
