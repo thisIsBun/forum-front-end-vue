@@ -26,7 +26,9 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid'
+import restaurantAPI from '../apis/restaurants'
+import { Toast } from '../utils/helpers'
+// import { v4 as uuidv4 } from 'uuid'
 
 export default {
   props: {
@@ -41,16 +43,37 @@ export default {
     }
   },
   methods: {
-    handleSubmit () {
-      // TODO: 像伺服器發送 POST，請求把新增這筆 comment
+    async handleSubmit () {
 
-      // 用 $emit，向父層發射資料更新
-      this.$emit('after-create-comment', {
-        commentId: uuidv4(),
-        restaurantId: this.restaurantId,
-        text: this.text
-      })
-      this.text = ''
+      try {
+
+        // 回傳值 response.data物件裡有：RestaurantId、commentId、message、status
+        const { data } = await restaurantAPI.postComment({
+          restaurantId: this.restaurantId,
+          text: this.text
+        })
+
+        if (data.status === 'error') {
+          throw new Error(data.message)
+        }
+
+        // 用 $emit，向父層發射資料更新
+        this.$emit('after-create-comment', {
+          commentId: data.commentId,
+          restaurantId: this.restaurantId,
+          text: this.text
+        })
+        this.text = ''
+
+
+      } catch (error) {
+        console.error(error.message)
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增評論，請稍後再試'
+        })
+      }
+
     }
   }
 }

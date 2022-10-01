@@ -83,7 +83,6 @@ export default {
       try {
 
         const { data } = await restaurantAPI.getRestaurant({ restaurantId })
-        console.log(data)
 
         const { isFavorited, isLiked, restaurant } = data
         const { Category, Comments, address, description, id, image, name, opening_hours, tel } = restaurant

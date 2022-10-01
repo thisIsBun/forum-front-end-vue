@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import userAPI from '../apis/user'
+import usersAPI from '../apis/user'
 
 Vue.use(Vuex)
 
@@ -36,7 +36,7 @@ export default new Vuex.Store({
       try {
 
         // response.data裡，會有 user資訊
-        const { data } = await userAPI.getCurrentUser()
+        const { data } = await usersAPI.getCurrentUser()
         const { id, name, email, image, isAdmin} = data
 
         if (data.status === 'error') {

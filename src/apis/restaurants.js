@@ -3,6 +3,21 @@ const getToken = () => localStorage.getItem('token')
 
 
 export default {
+  getDashboard ({restaurantId}) {
+    return apiHelper.get(`/restaurants/${restaurantId}/dashboard`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  postComment ({restaurantId, text}) {
+    return apiHelper.post('/comments', { restaurantId, text }, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  deleteComment ({commentId}) {
+    return apiHelper.delete(`/comments/${commentId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
   getRestaurant ({restaurantId}) {
     return apiHelper.get(`/restaurants/${restaurantId}`, {
       headers: { Authorization: `Bearer ${getToken()}` }

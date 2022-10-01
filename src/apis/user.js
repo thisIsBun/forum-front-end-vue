@@ -5,6 +5,13 @@ import { apiHelper } from "../utils/helpers";
 const getToken = () => localStorage.getItem('token')
 
 export default {
+  update({ userId, formData}) {
+    return apiHelper.put(`/users/${userId}`, { userId, formData }, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    })
+  },
     // 只是要驗證該 user token，登入資訊
   getCurrentUser () {
     return apiHelper.get('/get_current_user', {

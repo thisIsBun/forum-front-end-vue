@@ -36,9 +36,9 @@
               role="button"
             >Edit</router-link>
 
-            <button type="button" class="btn btn-danger" v-else-if="isFollowed" @click.stop.prevent="deleteFollow">取消追蹤</button>
+            <button type="button" class="btn btn-danger" v-else-if="isFollowed" @click.stop.prevent="deleteFollowing">取消追蹤</button>
 
-            <button type="button" class="btn btn-primary" v-else @click.stop.prevent="addFollow">追蹤</button>
+            <button type="button" class="btn btn-primary" v-else @click.stop.prevent="addFollowing">追蹤</button>
 
           </p>
         </div>
@@ -49,6 +49,8 @@
 
 <script>
 import { emptyImageFilter } from '../utils/mixin.js'
+import usersAPI from '../apis/user'
+import { Toast } from '../utils/helpers'
 
 export default {
   mixins: [emptyImageFilter],
@@ -71,13 +73,56 @@ export default {
       isFollowed: this.initialIsFollowed
     }
   },
-  methods: {
-    addFollow() {
-      this.isFollowed = true
-    },
-    deleteFollow() {
-      this.isFollowed = false
+  watch: {
+    initialIsFollowed: {
+      handler (newData) {
+        this.isFollowed = newData
+      }
     }
+  },
+  methods: {
+    async addFollowing() {
+      try {
+        const { data } = await usersAPI.addFollowing({ userId: this.user.id })
+        console.log(data)
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.isFollowed = true
+
+      } catch (error) {
+        Toast({
+          icon: 'error',
+          title: '無法加入追蹤，請稍後再試'
+        })
+      }
+    },
+    async deleteFollowing() {
+      try {
+        const { data } = await usersAPI.deleteFollowing({ userId: this.user.id })
+        console.log(data)
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.isFollowed = false
+
+      } catch (error) {
+        Toast({
+          icon: 'error',
+          title: '無法取消追蹤，請稍後再試'
+        })
+      }
+    }
+    // addFollow() {
+    //   this.isFollowed = true
+    // },
+    // deleteFollow() {
+    //   this.isFollowed = false
+    // }
   }
 }
 </script>
