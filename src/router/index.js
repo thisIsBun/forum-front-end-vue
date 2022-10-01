@@ -7,6 +7,15 @@ import store from '../store'
 
 Vue.use(VueRouter)
 
+const authorizeIsAdmin = (to, from, next) => {
+  const currentUser = store.state.currentUser
+  if (currentUser && !currentUser.isAdmin) {
+    next({ name: 'not-found' })
+    return
+  }
+  next()
+}
+
 const routes = [
   {
     // 設定根目錄的轉址
@@ -69,36 +78,43 @@ const routes = [
     path: '/admin',
     redirect: '/admin/restaurants',
     exact: true, //exact屬性，是設定必須完全一樣的網址
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants',
     name: 'admin-restaurants',
-    component: () => import('../views/AdminRestaurants')
+    component: () => import('../views/AdminRestaurants'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants/new',
     name: 'admin-restaurant-new',
-    component: () => import('../views/AdminRestaurantNew')
+    component: () => import('../views/AdminRestaurantNew'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants/:id/edit',
     name: 'admin-restaurant-edit',
-    component: () => import('../views/AdminRestaurantEdit')
+    component: () => import('../views/AdminRestaurantEdit'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/restaurants/:id',
     name: 'admin-restaurant',
-    component: () => import('../views/AdminRestaurant')
+    component: () => import('../views/AdminRestaurant'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/categories',
     name: 'admin-categories',
-    component: () => import('../views/AdminCategories')
+    component: () => import('../views/AdminCategories'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/users',
     name: 'admin-users',
-    component: () => import('../views/AdminUsers')
+    component: () => import('../views/AdminUsers'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '*',
@@ -119,9 +135,33 @@ const router = new VueRouter({
 // 是每次 route改變時，就可以用 dispatch()方式，去指派 action裡 fetchCurrentUser
 // fetchCurrentUser裡，會打 getCurrentUser api，成功的話 response.data裡會有 user資訊
 // 在用 commit的方式，去 invoke mutations裡的 setCurrentUser，讓 state取得 user資訊
-router.beforeEach((to, from, next) => {
+router.beforeEach( async (to, from, next) => {
 
-  store.dispatch('fetchCurrentUser')
+  const token = localStorage.getItem('token')
+  const tokenInStore = store.state.token
+  let isAuthenticated = store.state.isAuthenticated
+
+  // 當有 token，且 token 跟 local storage 不一樣，才要打 api取得使用者資訊
+  // 會從 api是否有成功取得，改變 isAuthenticated值
+  if (tokenInStore && tokenInStore !== token) {
+    isAuthenticated = await store.dispatch('fetchCurrentUser')
+  }
+  // 不需要驗證的頁面，用 to.name當值
+  const pathsWithoutAuthentication = ['sign-in', 'sign-up']
+
+  // 轉址，要避免無窮迴圈
+  // 如果驗證失敗，且想要去 signin/signup以外的網址 --> 轉到 signin頁面
+  if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
+    next('/signin')
+    return
+  }
+
+  // 如果驗證成功，想要去 signin/signup的網址 --> 轉到餐廳首頁
+  if (isAuthenticated && pathsWithoutAuthentication.includes(to.name)) {
+    next('/restaurants')
+    return
+  }
+  
   next()
 })
 

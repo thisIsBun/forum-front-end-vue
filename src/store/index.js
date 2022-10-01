@@ -14,6 +14,7 @@ export default new Vuex.Store({
       isAdmin: false,
     },
     isAuthenticated: false, //是否成功登入
+    token: '' //將 token存起來，減少每次 router改變就打 api
   },
   getters: {
   },
@@ -27,6 +28,14 @@ export default new Vuex.Store({
         ...currentUser //再用 api取得的 currentUser覆蓋
       }
       state.isAuthenticated = true //改成成功登入
+      state.token = localStorage.getItem('token')
+    },
+    // 撤銷 token
+    revokeAuthentication (state) {
+      state.currentUser = {}
+      state.isAuthenticated = false
+      state.token = ''
+      localStorage.removeItem('token')
     }
   },
   // dispatch 來取得 api資料
@@ -43,7 +52,7 @@ export default new Vuex.Store({
           throw new Error(data.message)
         }
 
-        // commit帶進參數後，可以用 commit方式 invole mutations裡的 setCurrentUser方式。讓 每次
+        // commit帶進參數後，可以用 commit方式 invole mutations裡的 setCurrentUser方式
         commit('setCurrentUser', {
           id,
           name,
@@ -52,9 +61,13 @@ export default new Vuex.Store({
           isAdmin
         })
 
+        return true //驗證有效時，回傳 true
+
       } catch (error) {
         console.log(error)
         console.error('can not fetch user information')
+        commit('revokeAuthentication')
+        return false
       }
     }
   },

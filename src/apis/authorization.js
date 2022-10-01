@@ -13,12 +13,9 @@ export default {
       password
     })
   },
-  // signUp ( data ) {
-  //   return apiHelper.post('signup', {
-  //     ...data
-  //   })
-  // }
-  signUp ({formData}) {
-    return apiHelper.post('/signup', {formData})
+  signUp ( data ) {
+    return apiHelper.post('signup', {
+      ...data
+    })
   }
 }
