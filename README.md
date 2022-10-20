@@ -1,5 +1,10 @@
 # forum-front-end-vue
 
+## Github Pages
+```
+https://thisisbun.github.io/forum-front-end-vue/
+```
+
 ## Project setup
 ```
 npm install
