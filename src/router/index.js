@@ -137,13 +137,13 @@ const router = new VueRouter({
 // 在用 commit的方式，去 invoke mutations裡的 setCurrentUser，讓 state取得 user資訊
 router.beforeEach( async (to, from, next) => {
 
-  const token = localStorage.getItem('token')
+  const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
   let isAuthenticated = store.state.isAuthenticated
 
   // 當有 token，且 token 跟 local storage 不一樣，才要打 api取得使用者資訊
   // 會從 api是否有成功取得，改變 isAuthenticated值
-  if (tokenInStore && tokenInStore !== token) {
+  if (tokenInLocalStorage && tokenInStore !== tokenInLocalStorage) {
     isAuthenticated = await store.dispatch('fetchCurrentUser')
   }
   // 不需要驗證的頁面，用 to.name當值
