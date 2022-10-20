@@ -1,30 +1,37 @@
 <template>
   <div class="container py-5">
     <NavTabs />
+    <Spinner v-if="isLoading" />
 
-    <!-- Restaurant NavPills -->
-    <RestaurantsNavPills 
-    :categories="categories"
-    />
+      <template v-else>
+        <!-- Restaurant NavPills -->
+        <RestaurantsNavPills 
+        :categories="categories"
+        />
 
-    <!-- Restaurant Cards -->
-    <div class="row">
-      <RestaurantCards 
-      v-for="restaurant in restaurants" 
-      :key="restaurant.id" 
-      :initial-restaurant="restaurant" 
-      />
-    </div>
+        <!-- Restaurant Cards -->
+        <div class="row">
+          <RestaurantCards 
+          v-for="restaurant in restaurants" 
+          :key="restaurant.id" 
+          :initial-restaurant="restaurant" 
+          />
+        </div>
 
-    <!-- Restaurant Paginator -->
-    <RestaurantsPagination 
-    v-if="totalPage.length > 1"
-    :current-page="currentPage"
-    :total-page="totalPage"
-    :previous-page="previousPage"
-    :next-page="nextPage"
-    :categoryId="categoryId"
-    />
+        <!-- Restaurant Paginator -->
+        <RestaurantsPagination 
+        v-if="totalPage.length > 1"
+        :current-page="currentPage"
+        :total-page="totalPage"
+        :previous-page="previousPage"
+        :next-page="nextPage"
+        :categoryId="categoryId"
+        />
+
+        <div v-if="restaurants.length < 1">
+          此類別目前無餐廳資料
+        </div>
+      </template>
 
   </div>
 </template>
@@ -36,6 +43,7 @@
   import RestaurantsPagination from '../components/RestaurantsPagination.vue'
   import restaurantsAPI from '../apis/restaurants'
   import { Toast } from '../utils/helpers'
+  import Spinner from '../components/Spinner.vue'
 
 
   export default {
@@ -44,6 +52,7 @@
       RestaurantCards,
       RestaurantsNavPills,
       RestaurantsPagination,
+      Spinner
     },
     data () {
       return {
@@ -54,6 +63,7 @@
         totalPage: "",
         previousPage: -1,
         nextPage: -1,
+        isLoading: true
       }
     },
     created () {
@@ -96,8 +106,11 @@
           this.totalPage = totalPage
           this.previousPage = prev
           this.nextPage = next
+          
+          this.isLoading = false
 
         } catch (error) {
+          this.isLoading = false
           Toast.fire({
             icon: 'error',
             title: '無法取得餐廳資料，請稍後再試'

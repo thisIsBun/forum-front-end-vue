@@ -1,24 +1,29 @@
 <template>
+
   <div class="container py-5">
-    <h1>餐廳描述頁</h1>
-    <!-- 餐廳資訊頁 RestaurantDetail -->
-    <RestaurantDetail :initial-restaurant="restaurant" />
-    <hr>
+    <Spinner v-if="isLoading" />
 
-    <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments 
-    :restaurantComments="restaurantComments" 
-    @after-delete-comment="afterDeleteComment"
-    />
-
-    <!-- 新增評論 CreateComment -->
-    <CreateComment 
-    :restaurantId="restaurant.id" 
-    @after-create-comment="afterCreateComment"
-    />
-
+    <template v-else>
+      <h1>餐廳描述頁</h1>
+      <!-- 餐廳資訊頁 RestaurantDetail -->
+      <RestaurantDetail :initial-restaurant="restaurant" />
+      <hr>
+      
+      <!-- 餐廳評論 RestaurantComments -->
+      <RestaurantComments
+        :restaurantComments="restaurantComments"
+        @after-delete-comment="afterDeleteComment"
+      />
+      
+      <!-- 新增評論 CreateComment -->
+      <CreateComment
+        :restaurantId="restaurant.id"
+        @after-create-comment="afterCreateComment"
+      />
+    </template>
 
   </div>
+
 </template>
 
 <script>
@@ -28,6 +33,7 @@ import CreateComment from '../components/CreateComment.vue'
 import restaurantAPI from '../apis/restaurants'
 import { Toast } from '../utils/helpers'
 import { mapState } from 'vuex'
+import Spinner from '../components/Spinner.vue'
 
 
 // const dummyUser = {
@@ -46,6 +52,7 @@ export default {
     RestaurantDetail,
     RestaurantComments,
     CreateComment,
+    Spinner
   },
   data () {
     return {
@@ -62,7 +69,7 @@ export default {
         isLiked: false
       },
       restaurantComments: [],
-      // currentUser: {} --> 要移除，currentUser資料都來自 Vuex
+      isLoading: true
     }
   },
   created () {
@@ -100,8 +107,10 @@ export default {
           isLiked,
         }
         this.restaurantComments = Comments
+        this.isLoading = false
 
       } catch (error) {
+        this.isLoading = false
         console.error(error.message)
         Toast.fire({
           icon: 'error',

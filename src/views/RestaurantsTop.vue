@@ -1,63 +1,68 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <h1 class="mt-5">
-      人氣餐廳
-    </h1>
+    <Spinner v-if="isLoading" />
 
-    <hr>
-    <div
-      class="card mb-3"
-      style="max-width: 540px;margin: auto;"
-      v-for="restaurant in restaurants"
-      :key="restaurant.id"
-    >
-      <div class="row no-gutters">
+    <template v-else>
+      <h1 class="mt-5">
+        人氣餐廳
+      </h1>
 
-        <div class="col-md-4">
-          <router-link 
-          :to="{name: 'restaurant', params: {id: restaurant.id}}"
-          >
-            <img
-              class="card-img"
-              :src="restaurant.image | emptyImage"
-            >
-          </router-link>
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title">
-              {{restaurant.name}}
-            </h5>
-            <span class="badge badge-secondary">收藏數：{{restaurant.FavoriteCount}}</span>
-            <p class="card-text">
-              {{restaurant.description}}
-            </p>
-            <router-link
-              :to="{name: 'restaurant', params: {id: restaurant.id}}"
-              class="btn btn-primary mr-2"
-            >Show</router-link>
+      <hr>
+      <div
+        class="card mb-3"
+        style="max-width: 540px;margin: auto;"
+        v-for="restaurant in restaurants"
+        :key="restaurant.id"
+      >
+        <div class="row no-gutters">
 
-            <button
-              type="button"
-              class="btn btn-danger mr-2"
-              v-if="restaurant.isFavorited"
-              @click.stop.prevent="deleteFavorited(restaurant.id)"
+          <div class="col-md-4">
+            <router-link 
+            :to="{name: 'restaurant', params: {id: restaurant.id}}"
             >
-              移除最愛
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              v-else
-              @click.stop.prevent="addFavorited(restaurant.id)"
-            >
-              加到最愛
-            </button>
+              <img
+                class="card-img"
+                :src="restaurant.image | emptyImage"
+              >
+            </router-link>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">
+                {{restaurant.name}}
+              </h5>
+              <span class="badge badge-secondary">收藏數：{{restaurant.FavoriteCount}}</span>
+              <p class="card-text">
+                {{restaurant.description}}
+              </p>
+              <router-link
+                :to="{name: 'restaurant', params: {id: restaurant.id}}"
+                class="btn btn-primary mr-2"
+              >Show</router-link>
+
+              <button
+                type="button"
+                class="btn btn-danger mr-2"
+                v-if="restaurant.isFavorited"
+                @click.stop.prevent="deleteFavorited(restaurant.id)"
+              >
+                移除最愛
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                v-else
+                @click.stop.prevent="addFavorited(restaurant.id)"
+              >
+                加到最愛
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
+
   </div>
 </template>
 
@@ -67,15 +72,18 @@ import { emptyImageFilter } from '../utils/mixin.js'
 import restaurantsAPI from '../apis/restaurants'
 import usersAPI from '../apis/user'
 import { Toast } from '../utils/helpers'
+import Spinner from '../components/Spinner.vue'
 
 export default {
   mixins: [emptyImageFilter],
   components: {
     NavTabs,
+    Spinner
   },
   data () {
     return {
-      restaurants: []
+      restaurants: [],
+      isLoading: true
     }
   },
   created () {
@@ -86,7 +94,9 @@ export default {
       try {
         const { data } = await restaurantsAPI.getTopRestaurants()
         this.restaurants = data.restaurants
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法取得人氣餐廳，請稍後再試'
